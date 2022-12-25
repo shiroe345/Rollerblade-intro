@@ -32,6 +32,7 @@ if channel_access_token is None:
 
 
 # Unique FSM for each user
+machines = {}
 machine = create_machine()
 
 # 必須放上自己的Channel Access Token
@@ -113,8 +114,12 @@ def webhook_handler():
             continue
         if not isinstance(event.message.text, str):
             continue
+        
+        
+        if event.source.user_id not in machines:
+            machines[event.source.user_id] = create_machine()
 
-        response = machine.advance(event)
+        response = machines[event.source.user_id].advance(event)
         if response == False:
             send_text_message(event.reply_token, "Please enter the right format")
 
