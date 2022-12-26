@@ -7,4 +7,4 @@
 <p align=center>
     <img src = "https://i.imgur.com/8hZUmAZ.jpg" width = 30% height = 30%>
 </p>
-<div align=center>![](https://i.imgur.com/8hZUmAZ.jpg)</div>
+<div align=center> ![](https://i.imgur.com/8hZUmAZ.jpg)</div>
