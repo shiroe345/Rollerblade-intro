@@ -9,7 +9,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage 
 
 from machine import create_machine
-from utils import send_flex_message, send_text_message
+from utils import send_flex_message, send_image_url, send_text_message
 
 #  載入環境變數
 from dotenv import load_dotenv
@@ -23,6 +23,9 @@ os.environ["PATH"] += os.pathsep + 'D:/Graphviz/bin/'
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
+admin_user_id = os.getenv('LINE_USER_ID', None)
+ngrok_url = os.getenv('NGROK_URL' ,None)
+
 if channel_secret is None:
     print('Specify LINE_CHANNEL_SECRET as environment variable.')
     sys.exit(1)
@@ -119,9 +122,12 @@ def webhook_handler():
         if event.source.user_id not in machines:
             machines[event.source.user_id] = create_machine()
 
-        response = machines[event.source.user_id].advance(event)
-        if response == False:
-            send_text_message(event.reply_token, "Please enter the right format")
+        if event.source.user_id == admin_user_id and event.message.text == "show-fsm":
+            send_image_url(event.source.user_id, ngrok_url+'/static/fsm.png')
+        else:
+            response = machines[event.source.user_id].advance(event)
+            if response == False:
+                send_text_message(event.reply_token, "Please enter the right format")
 
     return "OK"
 
